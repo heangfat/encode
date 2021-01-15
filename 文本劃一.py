@@ -5,21 +5,34 @@ import 異碼字表 as 字表
 
 print('　●●　除宂、除訛、劃一　●●')
 def 劃一(t):
-	nn = 0#;替換之字 = ['','','','']
+	nn = 0;替換之字 = ['','','','']
 	for ym in 字表.正宂:
-		nn = nn + len(re.findall('['+ym[1:]+']',t))
+		匹配 = re.findall('['+ym[1:]+']',t)
+		if len(匹配)>0:
+			替換之字[0] = 替換之字[0] + ''.join(匹配)
+			nn = nn + len(匹配)
 		t = re.sub('['+ym[1:]+']',ym[0],t)
 	for ym in 字表.稍訛重構:
-		nn = nn + len(re.findall('['+ym[1:]+']',t))
+		匹配 = re.findall('['+ym[1:]+']',t)
+		if len(匹配)>0:
+			替換之字[1] = 替換之字[1] + ''.join(匹配)
+			nn = nn + len(匹配)
 		t = re.sub('['+ym[1:]+']',ym[0],t)
 	for ym in 字表.純訛:
-		nn = nn + len(re.findall('['+ym[1:]+']',t))
+		匹配 = re.findall('['+ym[1:]+']',t)
+		if len(匹配)>0:
+			替換之字[2] = 替換之字[2] + ''.join(匹配)
+			nn = nn + len(匹配)
 		t = re.sub('['+ym[1:]+']',ym[0],t)
 	for ym in 字表.隸定不同:
-		nn = nn + len(re.findall('['+ym[1:]+']',t))
+		匹配 = re.findall('['+ym[1:]+']',t)
+		if len(匹配)>0:
+			替換之字[3] = 替換之字[3] + ''.join(匹配)
+			nn = nn + len(匹配)
 		t = re.sub('['+ym[1:]+']',ym[0],t)
+	print('、'.join(替換之字))
 	return {"得":t, "計":nn}
-讀檔名 = '隋書16.txt';寫檔名 = '隋書16-.txt'
+讀檔名 = '隋書17.txt';寫檔名 = '隋書17-.txt'
 try:
 	原文件 = open(讀檔名,mode='br')
 	bom2 = 原文件.read(2);原文件.close()
