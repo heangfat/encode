@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import sys,getopt
 import re
+sys.path.append("/home/yyrdh/文件/")
 import 異碼字表 as 字表
 
 print('　●●　除宂、除訛、劃一　●●')
@@ -32,7 +34,18 @@ def 劃一(t):
 		t = re.sub('['+ym[1:]+']',ym[0],t)
 	print('、'.join(替換之字))
 	return {"得":t, "計":nn}
-讀檔名 = '隋書17.txt';寫檔名 = '隋書17-.txt'
+讀檔名 = '隋書19.txt';寫檔名 = '隋書19-.txt'
+try:
+	opts, args = getopt.getopt(sys.argv[1:],"助入:出:",["輸入文件=","輸出文件="])
+except getopt.GetoptError:
+	print("文本劃一.py -入 <輸入文件> -出 <輸出文件>")
+for opt, arg in opts:
+	if opt in ("-入", "--輸入文件"):
+		讀檔名 = arg
+	elif opt in ("-出", "--輸出文件"):
+		寫檔名 = arg
+	elif opt == '-助':
+		print("文本劃一.py -入 <輸入文件> -出 <輸出文件>")
 try:
 	原文件 = open(讀檔名,mode='br')
 	bom2 = 原文件.read(2);原文件.close()
