@@ -3,36 +3,30 @@
 import sys,getopt
 import re
 sys.path.append("~/文件/")
-import 異碼字表 as 字表
+#import 異碼字表 as 字表
+import json
 
 print('　●●　除宂、除訛、劃一　●●')
+宂碼彙 = open('宂碼彙.json')
+字彙 = json.load(宂碼彙)
+宂碼彙.close()
 def 劃一(t):
-	nn = 0;替換之字 = ['','','','']
-	for ym in 字表.正宂:
-		匹配 = re.findall('['+ym[1:]+']',t)
-		if len(匹配)>0:
-			替換之字[0] = 替換之字[0] + ''.join(匹配)
-			nn = nn + len(匹配)
-		t = re.sub('['+ym[1:]+']',ym[0],t)
-	for ym in 字表.稍訛重構:
-		匹配 = re.findall('['+ym[1:]+']',t)
-		if len(匹配)>0:
-			替換之字[1] = 替換之字[1] + ''.join(匹配)
-			nn = nn + len(匹配)
-		t = re.sub('['+ym[1:]+']',ym[0],t)
-	for ym in 字表.純訛:
-		匹配 = re.findall('['+ym[1:]+']',t)
-		if len(匹配)>0:
-			替換之字[2] = 替換之字[2] + ''.join(匹配)
-			nn = nn + len(匹配)
-		t = re.sub('['+ym[1:]+']',ym[0],t)
-	for ym in 字表.隸定不同:
-		匹配 = re.findall('['+ym[1:]+']',t)
-		if len(匹配)>0:
-			替換之字[3] = 替換之字[3] + ''.join(匹配)
-			nn = nn + len(匹配)
-		t = re.sub('['+ym[1:]+']',ym[0],t)
-	print('、'.join(替換之字))
+	nn = 0
+	替換字彙 = {}; 略過 = ('稍訛重構')
+	for 類名,字組 in 字彙.items():
+		if 類名 in 略過:
+			continue
+		替換字彙[類名] = ''
+		for ym in 字組:
+			匹配 = re.findall('['+ym[1:]+']',t)
+			if len(匹配)>0:
+				替換字彙[類名] += ''.join(匹配)
+				nn += len(匹配)
+			t = re.sub('['+ym[1:]+']',ym[0],t)
+		if len(替換字彙[類名])>0:
+			print(f'◉{類名}：{替換字彙[類名]}')
+		else:
+			print(f'◉{類名}（无）')
 	return {"得":t, "計":nn}
 讀檔名 = '隋書19.txt';寫檔名 = '隋書19-.txt'
 try:
