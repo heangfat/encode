@@ -10,24 +10,37 @@ print('　●●　除宂、除訛、劃一　●●')
 宂碼彙 = open('宂碼彙.json')
 字彙 = json.load(宂碼彙)
 宂碼彙.close()
-def 劃一(t):
-	nn = 0
+def 劃一(t,攺正文=True):
+	nn = 0#;替換之字 = ['','','','']
 	替換字彙 = {}; 略過 = ('稍訛重構')
+	結果 = t
+	if not 攺正文:
+		#夾注 = re.findall(r'\(\(=.+?=\)\)',t)
+		正文中 = re.findall(r'=\)\).+?\(\(=',t,re.S); 正文首 = re.match(r'(.*?)\(\(=',t,re.S); 正文尾倒 = re.match(r'(.*?)\)\)=',t[::-1],re.S)
+		結果 = re.sub(r'=\)\).+?\(\(=','=))((=',t,flags=re.S);結果 = re.sub(r'^.*?\(\(=', '((=', 結果, flags=re.S);結果 = re.sub(r'^.*?\)\)=','))=', 結果[::-1], flags=re.S)[::-1]
 	for 類名,字組 in 字彙.items():
 		if 類名 in 略過:
 			continue
 		替換字彙[類名] = ''
 		for ym in 字組:
-			匹配 = re.findall('['+ym[1:]+']',t)
+			匹配 = re.findall('['+ym[1:]+']',結果)
 			if len(匹配)>0:
 				替換字彙[類名] += ''.join(匹配)
 				nn += len(匹配)
-			t = re.sub('['+ym[1:]+']',ym[0],t)
+			結果 = re.sub('['+ym[1:]+']',ym[0],結果)
 		if len(替換字彙[類名])>0:
 			print(f'◉{類名}：{替換字彙[類名]}')
 		else:
 			print(f'◉{類名}（无）')
-	return {"得":t, "計":nn}
+	if not 攺正文:
+		for 字句 in 正文中:
+			結果 = re.sub(r'=\)\)\(\(=', 字句, 結果, 1)
+		if 正文首 != None:
+			結果 = 正文首.group(1)+ 結果
+		if 正文尾倒 != None:
+			結果 += 正文尾倒.group(1)[::-1]
+		print('未攺正文')
+	return {"得":結果, "計":nn}
 讀檔名 = '隋書19.txt';寫檔名 = '隋書19-.txt'
 try:
 	opts, args = getopt.getopt(sys.argv[1:],"助入:出:",["輸入文件=","輸出文件="])
