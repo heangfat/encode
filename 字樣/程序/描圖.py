@@ -10,7 +10,7 @@ def 直方圖(圖片文件='wordlib/万.gif'):
 
 import numpy as np
 from PIL import Image
-import potrace,os,json
+import os,json#,potrace
 
 def 列文字(json檔='訛族.json'):
 	with open(json檔) as f:
