@@ -12,11 +12,11 @@ import numpy as np
 from PIL import Image
 import os,json#,potrace
 
-def 列文字(json檔='訛族.json'):
+def 加載字彙(json檔='訛族.json'):
 	with open(json檔) as f:
 		d = json.load(f)
-	問題字集 = ''.join(d.values())
-	return 問題字集
+	#問題字集 = ''.join(d.keys())+''.join(d.values())
+	return d#問題字集
 def 調重心(圖片文件='wordlib/万.gif',閾=200):
 	im_gray = np.array(Image.open(圖片文件).convert('L'))
 	im_bool = im_gray > 閾
@@ -39,12 +39,19 @@ def 主():
 	路徑 = 'wordlib';目標文件夾 = '需要之字'
 	原圖集 = os.listdir(路徑)
 	os.makedirs(目標文件夾)
-	字集 = 列文字()
+	字彙 = 加載字彙();字集 = ''.join(字彙.keys())+''.join(字彙.values())
 	for 原圖 in 原圖集:
 		原字 = 原圖[:-4]
 		if 原字 not in 字集:
 			continue
 		修正圖 = 調重心(os.path.join(路徑,原圖))
 		#矢量圖 = potrace.Bitmap(修正圖).trace()
-		Image.fromarray(修正圖).save(os.path.join(目標文件夾,原字+'.png'))
+		for 部件,屬字 in 字彙.items():
+			if 原字 in 部件:
+				存名 = 原字
+				break
+			elif 原字 in 屬字:
+				存名 = 部件 +'-'+ 原字
+				break
+		Image.fromarray(修正圖).save(os.path.join(目標文件夾,存名+'.png'))
 主()
